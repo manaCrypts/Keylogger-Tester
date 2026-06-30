@@ -1,0 +1,172 @@
+const readline = require('readline');
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+const pizza_max_vapi_menu = {
+  name: "Pizza Max Finglas/Balbriggan (2026 Pricing)",
+  sizes: { "7in": '7"', "10in": '10"', "12in": '12"', "14in": '14"', "16in": '16"' },
+  pizza_base: { "7in": 5, "10in": 7.5, "12in": 10, "14in": 12.5, "16in": 15 },
+  named_pizzas: {
+    "MARGHERITA": { "7in": 5, "10in": 7.5, "12in": 10, "14in": 12.5, "16in": 15 },
+    "PEPPERONI LOVERS": { "7in": 5, "10in": 9, "12in": 13.5, "14in": 15, "16in": 17.5 },
+    "HAWAIIAN": { "7in": 5, "10in": 9, "12in": 13.5, "14in": 15, "16in": 17.5 },
+    "HOT MAX": { "7in": 5, "10in": 9, "12in": 13.5, "14in": 15, "16in": 17.5 },
+    "VEGGIE FRESH": { "7in": 5, "10in": 9, "12in": 13.5, "14in": 15, "16in": 17.5 },
+    "AMERICAN DREAM": { "10in": 9.5, "12in": 14, "14in": 16, "16in": 18.5 },
+    "BBQ DELUXE": { "10in": 9.5, "12in": 14, "14in": 16, "16in": 18.5 },
+    "BBQ NO1": { "10in": 9.5, "12in": 14, "14in": 16, "16in": 18.5 },
+    "VEGGIE DELUXE": { "10in": 10, "12in": 14.5, "14in": 17, "16in": 19.5 },
+    "DELUXE": { "10in": 10, "12in": 14.5, "14in": 17, "16in": 19.5 },
+    "AMERICAN HOT": { "10in": 10, "12in": 14.5, "14in": 17, "16in": 19.5 },
+    "SUPER SPICY": { "10in": 10, "12in": 14.5, "14in": 17, "16in": 19.5 },
+    "MAXI MEATS": { "10in": 10.5, "12in": 15, "14in": 18, "16in": 20.5 },
+    "FULL MAX": { "10in": 10.5, "12in": 15, "14in": 18, "16in": 20.5 }
+  },
+  categories: {
+    chips: {
+      "Nachos (7oz)": 7,
+      "Taco Cheese Chips (6oz)": 7,
+      "Taco Chips (6oz)": 6.5,
+      "Bacon Cheese Chips (6oz)": 6,
+      "Garlic & Cheese Chips (6oz)": 6,
+      "Garlic & Chips (6oz)": 5.5,
+      "Curry & Cheese Chips (6oz)": 6,
+      "Curry & Chips (6oz)": 5.5
+    },
+    sides1: {
+      "Chips": 3.5,
+      "Potato Wedges": 4.5,
+      "Garlic Bread": 4,
+      "Garlic Bread with Cheese": 5,
+      'Garlic Pizza Bread 7"': 5
+    },
+    sides_2: {
+      "SPICY SHREDDED CHICKEN": 7.2,
+      "CHICKEN TENDERS (7)": 7.2,
+      "CRISPY WINGS (7)": 7.2,
+      "ROAST BUFFALO WINGS (7)": 7.2,
+      "POPPIN CHICKEN": 7.2,
+      "VEGETABLE ROLLS (10)": 5.5,
+      "ONION RINGS (12)": 5,
+      "COCKTAIL SAUSAGES (12)": 5
+    },
+    desserts: {
+      "Donuts (2)": 2,
+      "Hot Brownie": 2.5,
+      "Ice Cream Cookie": 2.5,
+      "Hot Cookies (3)": 4,
+      "Ben & Jerry 100ml": 3.5
+    },
+    drinks: {
+      "Cans": 2,
+      "Large Bottle 1L": 4,
+      "Water 500ml": 1.5,
+      "Monster": 3.5
+    },
+    milkshakes: {
+      "Kinder": 4,
+      "Ferrero": 4,
+      "Oreo": 4,
+      "Strawberry": 4
+    },
+    burgers: {
+      "Crispy Chicken Burger": { price: 6, chips: 2, drink: 1 },
+      "BBQ Max": { price: 6, chips: 2, drink: 1 },
+      "Bacon and Cheese": { price: 6, chips: 2, drink: 1 },
+      "Buffalo Chicken Burger": { price: 6, chips: 2, drink: 1 }
+    },
+    spicy_bags: {
+      "Spicy Bag Combo": 9.5,
+      "Doner Kebab": 7.95,
+      "Chips": 2,
+      "Can": 1,
+      "Dip": 0.5
+    },
+    deals: {
+      "Meal for 1 (10in)": 11.95,
+      "Meal for 2 (12in)": 17.95,
+      "Meal for 3 (14in)": 21.95,
+      "Family Deal (16in)": 23.95,
+      "Hungry Man Deal (16in)": 26.95,
+      "PartyMan Deal (16in)": 37.95
+    }
+  }
+};
+
+const order = { items: [], total: 0 };
+
+function showOrder() {
+  console.log("\nCurrent order:");
+  order.items.forEach((item,i)=>console.log(`${i+1}. ${item.type} - ${item.name}${item.size?` (${item.size})`:''} - ${item.price}€`));
+  console.log(`Total: ${order.total}€\n`);
+}
+
+function calculateTotal() {
+  order.total = order.items.reduce((sum,i)=>sum+i.price,0);
+}
+
+function addPizza(name, size) {
+  if(!pizza_max_vapi_menu.named_pizzas[name] || !pizza_max_vapi_menu.named_pizzas[name][size]) {
+    console.log("Invalid pizza or size");
+    return;
+  }
+  const price = pizza_max_vapi_menu.named_pizzas[name][size];
+  order.items.push({ type: "pizza", name, size, price });
+  calculateTotal();
+}
+
+function addItem(type, name) {
+  if(!pizza_max_vapi_menu.categories[type] || pizza_max_vapi_menu.categories[type][name] === undefined) {
+    console.log("Invalid item");
+    return;
+  }
+  const price = pizza_max_vapi_menu.categories[type][name];
+  order.items.push({ type, name, price });
+  calculateTotal();
+}
+
+function askQuestion(question) {
+  return new Promise(resolve => rl.question(question, ans => resolve(ans.trim())));
+}
+
+async function orderFlow() {
+  while(true) {
+    const type = await askQuestion("Order type (pizza/chips/sides1/sides_2/drinks/milkshakes/burgers/spicy_bags/deals) or 'done' to finish: ");
+    if(type.toLowerCase() === "done") break;
+
+    if(type==="pizza") {
+      const name = await askQuestion(`Choose pizza (${Object.keys(pizza_max_vapi_menu.named_pizzas).join(", ")}): `);
+      const size = await askQuestion(`Choose size (${Object.keys(pizza_max_vapi_menu.sizes).join(", ")}): `);
+      addPizza(name, size);
+    } else {
+      const name = await askQuestion(`Choose ${type} (${Object.keys(pizza_max_vapi_menu.categories[type]).join(", ")}): `);
+      addItem(type, name);
+    }
+
+    showOrder();
+
+    let confirmOrder = await askQuestion("Confirm order? (yes/no/correct): ");
+    if(confirmOrder.toLowerCase() === "yes") break;
+    else if(confirmOrder.toLowerCase() === "correct") {
+      let action = await askQuestion("Remove or replace an item? (remove/replace): ");
+      showOrder();
+      if(action==="remove") {
+        let idx = parseInt(await askQuestion("Enter item number to remove: "));
+        if(idx>0 && idx<=order.items.length) order.items.splice(idx-1,1);
+      } else if(action==="replace") {
+        let idx = parseInt(await askQuestion("Enter item number to replace: "));
+        if(idx>0 && idx<=order.items.length) order.items.splice(idx-1,1);
+      }
+      calculateTotal();
+      showOrder();
+    }
+  }
+  console.log("\nFinal order confirmed:");
+  showOrder();
+  rl.close();
+}
+
+orderFlow();

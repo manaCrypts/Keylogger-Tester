@@ -1,6 +1,6 @@
 # 🔐 Keylogger Tester
 
-A security-focused project developed in **Cybersecurity (Semester 4)** at FAST NUCES Karachi. This project simulates detection and mitigation of keylogging activity, helping students understand how keyloggers operate and how to defend against them.
+A security-focused project developed in **Cybersecurity (Semester 3)** at FAST NUCES Karachi. This project simulates detection and mitigation of keylogging activity, helping students understand how keyloggers operate and how to defend against them.
 
 ## 🔑 Features
 - Simulated keylogging detection
